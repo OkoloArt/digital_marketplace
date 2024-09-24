@@ -29,9 +29,29 @@ import type { ABIResult, TransactionWithSigner } from 'algosdk'
 import { Algodv2, OnApplicationComplete, Transaction, AtomicTransactionComposer, modelsv2 } from 'algosdk'
 export const APP_SPEC: AppSpec = {
   "hints": {
-    "createApplication()void": {
+    "createApplication(uint64,uint64)void": {
       "call_config": {
         "no_op": "CREATE"
+      }
+    },
+    "setPrice(uint64)void": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    },
+    "optInToAsset(pay)void": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    },
+    "buyAsset(pay,uint64)void": {
+      "call_config": {
+        "no_op": "CALL"
+      }
+    },
+    "deleteApplication()void": {
+      "call_config": {
+        "delete_application": "CALL"
       }
     }
   },
@@ -72,7 +92,7 @@ export const APP_SPEC: AppSpec = {
     }
   },
   "source": {
-    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgovLyBUaGlzIFRFQUwgd2FzIGdlbmVyYXRlZCBieSBURUFMU2NyaXB0IHYwLjEwMi4wCi8vIGh0dHBzOi8vZ2l0aHViLmNvbS9hbGdvcmFuZGZvdW5kYXRpb24vVEVBTFNjcmlwdAoKLy8gVGhpcyBjb250cmFjdCBpcyBjb21wbGlhbnQgd2l0aCBhbmQvb3IgaW1wbGVtZW50cyB0aGUgZm9sbG93aW5nIEFSQ3M6IFsgQVJDNCBdCgovLyBUaGUgZm9sbG93aW5nIHRlbiBsaW5lcyBvZiBURUFMIGhhbmRsZSBpbml0aWFsIHByb2dyYW0gZmxvdwovLyBUaGlzIHBhdHRlcm4gaXMgdXNlZCB0byBtYWtlIGl0IGVhc3kgZm9yIGFueW9uZSB0byBwYXJzZSB0aGUgc3RhcnQgb2YgdGhlIHByb2dyYW0gYW5kIGRldGVybWluZSBpZiBhIHNwZWNpZmljIGFjdGlvbiBpcyBhbGxvd2VkCi8vIEhlcmUsIGFjdGlvbiByZWZlcnMgdG8gdGhlIE9uQ29tcGxldGUgaW4gY29tYmluYXRpb24gd2l0aCB3aGV0aGVyIHRoZSBhcHAgaXMgYmVpbmcgY3JlYXRlZCBvciBjYWxsZWQKLy8gRXZlcnkgcG9zc2libGUgYWN0aW9uIGZvciB0aGlzIGNvbnRyYWN0IGlzIHJlcHJlc2VudGVkIGluIHRoZSBzd2l0Y2ggc3RhdGVtZW50Ci8vIElmIHRoZSBhY3Rpb24gaXMgbm90IGltcGxlbWVudGVkIGluIHRoZSBjb250cmFjdCwgaXRzIHJlc3BlY3RpdmUgYnJhbmNoIHdpbGwgYmUgIipOT1RfSU1QTEVNRU5URUQiIHdoaWNoIGp1c3QgY29udGFpbnMgImVyciIKdHhuIEFwcGxpY2F0aW9uSUQKIQppbnQgNgoqCnR4biBPbkNvbXBsZXRpb24KKwpzd2l0Y2ggKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKmNyZWF0ZV9Ob09wICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRAoKKk5PVF9JTVBMRU1FTlRFRDoKCS8vIFRoZSByZXF1ZXN0ZWQgYWN0aW9uIGlzIG5vdCBpbXBsZW1lbnRlZCBpbiB0aGlzIGNvbnRyYWN0LiBBcmUgeW91IHVzaW5nIHRoZSBjb3JyZWN0IE9uQ29tcGxldGU/IERpZCB5b3Ugc2V0IHlvdXIgYXBwIElEPwoJZXJyCgoqYWJpX3JvdXRlX2NyZWF0ZUFwcGxpY2F0aW9uOgoJaW50IDEKCXJldHVybgoKKmNyZWF0ZV9Ob09wOgoJbWV0aG9kICJjcmVhdGVBcHBsaWNhdGlvbigpdm9pZCIKCXR4bmEgQXBwbGljYXRpb25BcmdzIDAKCW1hdGNoICphYmlfcm91dGVfY3JlYXRlQXBwbGljYXRpb24KCgkvLyB0aGlzIGNvbnRyYWN0IGRvZXMgbm90IGltcGxlbWVudCB0aGUgZ2l2ZW4gQUJJIG1ldGhvZCBmb3IgY3JlYXRlIE5vT3AKCWVycg==",
+    "approval": "I3ByYWdtYSB2ZXJzaW9uIDEwCgovLyBUaGlzIFRFQUwgd2FzIGdlbmVyYXRlZCBieSBURUFMU2NyaXB0IHYwLjEwMi4wCi8vIGh0dHBzOi8vZ2l0aHViLmNvbS9hbGdvcmFuZGZvdW5kYXRpb24vVEVBTFNjcmlwdAoKLy8gVGhpcyBjb250cmFjdCBpcyBjb21wbGlhbnQgd2l0aCBhbmQvb3IgaW1wbGVtZW50cyB0aGUgZm9sbG93aW5nIEFSQ3M6IFsgQVJDNCBdCgovLyBUaGUgZm9sbG93aW5nIHRlbiBsaW5lcyBvZiBURUFMIGhhbmRsZSBpbml0aWFsIHByb2dyYW0gZmxvdwovLyBUaGlzIHBhdHRlcm4gaXMgdXNlZCB0byBtYWtlIGl0IGVhc3kgZm9yIGFueW9uZSB0byBwYXJzZSB0aGUgc3RhcnQgb2YgdGhlIHByb2dyYW0gYW5kIGRldGVybWluZSBpZiBhIHNwZWNpZmljIGFjdGlvbiBpcyBhbGxvd2VkCi8vIEhlcmUsIGFjdGlvbiByZWZlcnMgdG8gdGhlIE9uQ29tcGxldGUgaW4gY29tYmluYXRpb24gd2l0aCB3aGV0aGVyIHRoZSBhcHAgaXMgYmVpbmcgY3JlYXRlZCBvciBjYWxsZWQKLy8gRXZlcnkgcG9zc2libGUgYWN0aW9uIGZvciB0aGlzIGNvbnRyYWN0IGlzIHJlcHJlc2VudGVkIGluIHRoZSBzd2l0Y2ggc3RhdGVtZW50Ci8vIElmIHRoZSBhY3Rpb24gaXMgbm90IGltcGxlbWVudGVkIGluIHRoZSBjb250cmFjdCwgaXRzIHJlc3BlY3RpdmUgYnJhbmNoIHdpbGwgYmUgIipOT1RfSU1QTEVNRU5URUQiIHdoaWNoIGp1c3QgY29udGFpbnMgImVyciIKdHhuIEFwcGxpY2F0aW9uSUQKIQppbnQgNgoqCnR4biBPbkNvbXBsZXRpb24KKwpzd2l0Y2ggKmNhbGxfTm9PcCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpjYWxsX0RlbGV0ZUFwcGxpY2F0aW9uICpjcmVhdGVfTm9PcCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQgKk5PVF9JTVBMRU1FTlRFRCAqTk9UX0lNUExFTUVOVEVEICpOT1RfSU1QTEVNRU5URUQKCipOT1RfSU1QTEVNRU5URUQ6CgkvLyBUaGUgcmVxdWVzdGVkIGFjdGlvbiBpcyBub3QgaW1wbGVtZW50ZWQgaW4gdGhpcyBjb250cmFjdC4gQXJlIHlvdSB1c2luZyB0aGUgY29ycmVjdCBPbkNvbXBsZXRlPyBEaWQgeW91IHNldCB5b3VyIGFwcCBJRD8KCWVycgoKLy8gY3JlYXRlQXBwbGljYXRpb24odWludDY0LHVpbnQ2NCl2b2lkCiphYmlfcm91dGVfY3JlYXRlQXBwbGljYXRpb246CgkvLyB1bml0YXJ5UHJpY2U6IHVpbnQ2NAoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgoJYnRvaQoKCS8vIGFzc2V0SWQ6IHVpbnQ2NAoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQoJYnRvaQoKCS8vIGV4ZWN1dGUgY3JlYXRlQXBwbGljYXRpb24odWludDY0LHVpbnQ2NCl2b2lkCgljYWxsc3ViIGNyZWF0ZUFwcGxpY2F0aW9uCglpbnQgMQoJcmV0dXJuCgovLyBjcmVhdGVBcHBsaWNhdGlvbihhc3NldElkOiBBc3NldElELCB1bml0YXJ5UHJpY2U6IHVpbnQ2NCk6IHZvaWQKLy8KLy8gQ3JlYXRpbmcgYSBuZXcgYXBwbGljYXRpb24KLy8KLy8gQHBhcmFtIGFzc2V0SWQgVGhlIElEIG9mIHRoZSBhc3NldCB0aGF0IHdlIGFyZSBzZWxsaW5nCi8vIEBwYXJhbSB1bml0YXJ5UHJpY2UgVGhlIGNvc3Qgb2YgYnV5aW5nIG9uZSB1bml0IG9mIHRoZSBhc3NldApjcmVhdGVBcHBsaWNhdGlvbjoKCXByb3RvIDIgMAoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czoxOAoJLy8gdGhpcy5hc3NldElkLnZhbHVlID0gYXNzZXRJZAoJYnl0ZSAweDYxNzM3MzY1NzQ0OTY0IC8vICJhc3NldElkIgoJZnJhbWVfZGlnIC0xIC8vIGFzc2V0SWQ6IEFzc2V0SUQKCWFwcF9nbG9iYWxfcHV0CgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjE5CgkvLyB0aGlzLnVuaXRhcnlQcmljZS52YWx1ZSA9IHVuaXRhcnlQcmljZQoJYnl0ZSAweDc1NmU2OTc0NjE3Mjc5NTA3MjY5NjM2NSAvLyAidW5pdGFyeVByaWNlIgoJZnJhbWVfZGlnIC0yIC8vIHVuaXRhcnlQcmljZTogdWludDY0CglhcHBfZ2xvYmFsX3B1dAoJcmV0c3ViCgovLyBzZXRQcmljZSh1aW50NjQpdm9pZAoqYWJpX3JvdXRlX3NldFByaWNlOgoJLy8gdW5pdGFyeVByaWNlOiB1aW50NjQKCXR4bmEgQXBwbGljYXRpb25BcmdzIDEKCWJ0b2kKCgkvLyBleGVjdXRlIHNldFByaWNlKHVpbnQ2NCl2b2lkCgljYWxsc3ViIHNldFByaWNlCglpbnQgMQoJcmV0dXJuCgovLyBzZXRQcmljZSh1bml0YXJ5UHJpY2U6IHVpbnQ2NCk6IHZvaWQKLy8KLy8gU2V0dGluZyB0aGUgbmV3IHVuaXRhcnkgcHJpY2Ugb2YgdGhlIGFzc2V0CnNldFByaWNlOgoJcHJvdG8gMSAwCgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjI2CgkvLyBhc3NlcnQodGhpcy50eG4uc2VuZGVyID09PSB0aGlzLmFwcC5jcmVhdG9yKQoJdHhuIFNlbmRlcgoJdHhuYSBBcHBsaWNhdGlvbnMgMAoJYXBwX3BhcmFtc19nZXQgQXBwQ3JlYXRvcgoJcG9wCgk9PQoJYXNzZXJ0CgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjI3CgkvLyB0aGlzLnVuaXRhcnlQcmljZS52YWx1ZSA9IHVuaXRhcnlQcmljZQoJYnl0ZSAweDc1NmU2OTc0NjE3Mjc5NTA3MjY5NjM2NSAvLyAidW5pdGFyeVByaWNlIgoJZnJhbWVfZGlnIC0xIC8vIHVuaXRhcnlQcmljZTogdWludDY0CglhcHBfZ2xvYmFsX3B1dAoJcmV0c3ViCgovLyBvcHRJblRvQXNzZXQocGF5KXZvaWQKKmFiaV9yb3V0ZV9vcHRJblRvQXNzZXQ6CgkvLyBtYnJUeG46IHBheQoJdHhuIEdyb3VwSW5kZXgKCWludCAxCgktCglkdXAKCWd0eG5zIFR5cGVFbnVtCglpbnQgcGF5Cgk9PQoKCS8vIGFyZ3VtZW50IDAgKG1iclR4bikgZm9yIG9wdEluVG9Bc3NldCBtdXN0IGJlIGEgcGF5IHRyYW5zYWN0aW9uCglhc3NlcnQKCgkvLyBleGVjdXRlIG9wdEluVG9Bc3NldChwYXkpdm9pZAoJY2FsbHN1YiBvcHRJblRvQXNzZXQKCWludCAxCglyZXR1cm4KCi8vIG9wdEluVG9Bc3NldChtYnJUeG46IFBheVR4bik6IHZvaWQKLy8KLy8gT3B0IHRoZSBjb250cmFjdCBhZGRyZXNzIGludG8gdGhlIGFzc2V0Ci8vIGkuZSB0aGlzIGlzIGxpa2UgaW1wb3J0aW5nIGEgdG9rZW4gLyBhc3NldCBpbnRvIHlvdXIgd2FsbGV0Ci8vCi8vIEBwYXJhbSBtYnJUeG4gVGhlIHBheW1lbnQgdHJhbnNhY3Rpb24gdGhhdCBwYXlzIGZvciB0aGUgb3B0LWluCm9wdEluVG9Bc3NldDoKCXByb3RvIDEgMAoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czozNwoJLy8gYXNzZXJ0KHRoaXMudHhuLnNlbmRlciA9PT0gdGhpcy5hcHAuY3JlYXRvcikKCXR4biBTZW5kZXIKCXR4bmEgQXBwbGljYXRpb25zIDAKCWFwcF9wYXJhbXNfZ2V0IEFwcENyZWF0b3IKCXBvcAoJPT0KCWFzc2VydAoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czozOQoJLy8gdmVyaWZ5UGF5VHhuKG1iclR4biwgewoJLy8gICAgICAgcmVjZWl2ZXI6IHRoaXMuYXBwLmFkZHJlc3MsCgkvLyAgICAgICBhbW91bnQ6IGdsb2JhbHMubWluQmFsYW5jZSArIGdsb2JhbHMuYXNzZXRPcHRJbk1pbkJhbGFuY2UsCgkvLyAgICAgfSkKCS8vIHZlcmlmeSByZWNlaXZlcgoJZnJhbWVfZGlnIC0xIC8vIG1iclR4bjogUGF5VHhuCglndHhucyBSZWNlaXZlcgoJZ2xvYmFsIEN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MKCT09CgoJLy8gdHJhbnNhY3Rpb24gdmVyaWZpY2F0aW9uIGZhaWxlZDogeyJ0eG4iOiJtYnJUeG4iLCJmaWVsZCI6InJlY2VpdmVyIiwiZXhwZWN0ZWQiOiJ0aGlzLmFwcC5hZGRyZXNzIn0KCWFzc2VydAoKCS8vIHZlcmlmeSBhbW91bnQKCWZyYW1lX2RpZyAtMSAvLyBtYnJUeG46IFBheVR4bgoJZ3R4bnMgQW1vdW50CglnbG9iYWwgTWluQmFsYW5jZQoJZ2xvYmFsIEFzc2V0T3B0SW5NaW5CYWxhbmNlCgkrCgk9PQoKCS8vIHRyYW5zYWN0aW9uIHZlcmlmaWNhdGlvbiBmYWlsZWQ6IHsidHhuIjoibWJyVHhuIiwiZmllbGQiOiJhbW91bnQiLCJleHBlY3RlZCI6Imdsb2JhbHMubWluQmFsYW5jZSArIGdsb2JhbHMuYXNzZXRPcHRJbk1pbkJhbGFuY2UifQoJYXNzZXJ0CgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjQ0CgkvLyBzZW5kQXNzZXRUcmFuc2Zlcih7CgkvLyAgICAgICB4ZmVyQXNzZXQ6IHRoaXMuYXNzZXRJZC52YWx1ZSwKCS8vICAgICAgIGFzc2V0QW1vdW50OiAwLAoJLy8gICAgICAgYXNzZXRSZWNlaXZlcjogdGhpcy5hcHAuYWRkcmVzcywKCS8vICAgICB9KQoJaXR4bl9iZWdpbgoJaW50IGF4ZmVyCglpdHhuX2ZpZWxkIFR5cGVFbnVtCgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjQ1CgkvLyB4ZmVyQXNzZXQ6IHRoaXMuYXNzZXRJZC52YWx1ZQoJYnl0ZSAweDYxNzM3MzY1NzQ0OTY0IC8vICJhc3NldElkIgoJYXBwX2dsb2JhbF9nZXQKCWl0eG5fZmllbGQgWGZlckFzc2V0CgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjQ2CgkvLyBhc3NldEFtb3VudDogMAoJaW50IDAKCWl0eG5fZmllbGQgQXNzZXRBbW91bnQKCgkvLyBjb250cmFjdHMvRGlnaXRhbE1hcmtldHBsYWNlLmFsZ28udHM6NDcKCS8vIGFzc2V0UmVjZWl2ZXI6IHRoaXMuYXBwLmFkZHJlc3MKCWdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCglpdHhuX2ZpZWxkIEFzc2V0UmVjZWl2ZXIKCgkvLyBGZWUgZmllbGQgbm90IHNldCwgZGVmYXVsdGluZyB0byAwCglpbnQgMAoJaXR4bl9maWVsZCBGZWUKCgkvLyBTdWJtaXQgaW5uZXIgdHJhbnNhY3Rpb24KCWl0eG5fc3VibWl0CglyZXRzdWIKCi8vIGJ1eUFzc2V0KHBheSx1aW50NjQpdm9pZAoqYWJpX3JvdXRlX2J1eUFzc2V0OgoJLy8gcXVhbnRpdHk6IHVpbnQ2NAoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQoJYnRvaQoKCS8vIGJ1eWVyVHhuOiBwYXkKCXR4biBHcm91cEluZGV4CglpbnQgMQoJLQoJZHVwCglndHhucyBUeXBlRW51bQoJaW50IHBheQoJPT0KCgkvLyBhcmd1bWVudCAxIChidXllclR4bikgZm9yIGJ1eUFzc2V0IG11c3QgYmUgYSBwYXkgdHJhbnNhY3Rpb24KCWFzc2VydAoKCS8vIGV4ZWN1dGUgYnV5QXNzZXQocGF5LHVpbnQ2NCl2b2lkCgljYWxsc3ViIGJ1eUFzc2V0CglpbnQgMQoJcmV0dXJuCgovLyBidXlBc3NldChidXllclR4bjogUGF5VHhuLCBxdWFudGl0eTogdWludDY0KTogdm9pZAovLwovLyBCdXlpbmcgYW4gYXNzZXQKLy8KLy8gQHBhcmFtIGJ1eWVyVHhuIFRoZSBwYXltZW50IHRyYW5zYWN0aW9uIHRoYXQgcGF5cyBmb3IgdGhlIGFzc2V0Ci8vIEBwYXJhbSBxdWFudGl0eSBUaGUgcXVhbnRpdHkgb2YgdGhlIGFzc2V0IHRvIGJ1eQpidXlBc3NldDoKCXByb3RvIDIgMAoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czo1OAoJLy8gYXNzZXJ0KHRoaXMuYXNzZXRJZC52YWx1ZS5pZCAhPT0gMCwgJ0Fzc2V0IElEIGlzIG5vdCBzZXQnKQoJYnl0ZSAweDYxNzM3MzY1NzQ0OTY0IC8vICJhc3NldElkIgoJYXBwX2dsb2JhbF9nZXQKCWludCAwCgkhPQoKCS8vIEFzc2V0IElEIGlzIG5vdCBzZXQKCWFzc2VydAoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czo1OQoJLy8gYXNzZXJ0KHRoaXMudW5pdGFyeVByaWNlLnZhbHVlICE9PSAwLCAnVW5pdGFyeSBwcmljZSBpcyBub3Qgc2V0JykKCWJ5dGUgMHg3NTZlNjk3NDYxNzI3OTUwNzI2OTYzNjUgLy8gInVuaXRhcnlQcmljZSIKCWFwcF9nbG9iYWxfZ2V0CglpbnQgMAoJIT0KCgkvLyBVbml0YXJ5IHByaWNlIGlzIG5vdCBzZXQKCWFzc2VydAoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czo2MQoJLy8gdmVyaWZ5UGF5VHhuKGJ1eWVyVHhuLCB7CgkvLyAgICAgICBzZW5kZXI6IHRoaXMudHhuLnNlbmRlciwKCS8vICAgICAgIHJlY2VpdmVyOiB0aGlzLmFwcC5hZGRyZXNzLAoJLy8gICAgICAgYW1vdW50OiB0aGlzLnVuaXRhcnlQcmljZS52YWx1ZSAqIHF1YW50aXR5LAoJLy8gICAgIH0pCgkvLyB2ZXJpZnkgc2VuZGVyCglmcmFtZV9kaWcgLTEgLy8gYnV5ZXJUeG46IFBheVR4bgoJZ3R4bnMgU2VuZGVyCgl0eG4gU2VuZGVyCgk9PQoKCS8vIHRyYW5zYWN0aW9uIHZlcmlmaWNhdGlvbiBmYWlsZWQ6IHsidHhuIjoiYnV5ZXJUeG4iLCJmaWVsZCI6InNlbmRlciIsImV4cGVjdGVkIjoidGhpcy50eG4uc2VuZGVyIn0KCWFzc2VydAoKCS8vIHZlcmlmeSByZWNlaXZlcgoJZnJhbWVfZGlnIC0xIC8vIGJ1eWVyVHhuOiBQYXlUeG4KCWd0eG5zIFJlY2VpdmVyCglnbG9iYWwgQ3VycmVudEFwcGxpY2F0aW9uQWRkcmVzcwoJPT0KCgkvLyB0cmFuc2FjdGlvbiB2ZXJpZmljYXRpb24gZmFpbGVkOiB7InR4biI6ImJ1eWVyVHhuIiwiZmllbGQiOiJyZWNlaXZlciIsImV4cGVjdGVkIjoidGhpcy5hcHAuYWRkcmVzcyJ9Cglhc3NlcnQKCgkvLyB2ZXJpZnkgYW1vdW50CglmcmFtZV9kaWcgLTEgLy8gYnV5ZXJUeG46IFBheVR4bgoJZ3R4bnMgQW1vdW50CglieXRlIDB4NzU2ZTY5NzQ2MTcyNzk1MDcyNjk2MzY1IC8vICJ1bml0YXJ5UHJpY2UiCglhcHBfZ2xvYmFsX2dldAoJZnJhbWVfZGlnIC0yIC8vIHF1YW50aXR5OiB1aW50NjQKCSoKCT09CgoJLy8gdHJhbnNhY3Rpb24gdmVyaWZpY2F0aW9uIGZhaWxlZDogeyJ0eG4iOiJidXllclR4biIsImZpZWxkIjoiYW1vdW50IiwiZXhwZWN0ZWQiOiJ0aGlzLnVuaXRhcnlQcmljZS52YWx1ZSAqIHF1YW50aXR5In0KCWFzc2VydAoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czo2NwoJLy8gc2VuZEFzc2V0VHJhbnNmZXIoewoJLy8gICAgICAgeGZlckFzc2V0OiB0aGlzLmFzc2V0SWQudmFsdWUsCgkvLyAgICAgICBhc3NldEFtb3VudDogcXVhbnRpdHksCgkvLyAgICAgICBhc3NldFJlY2VpdmVyOiB0aGlzLnR4bi5zZW5kZXIsCgkvLyAgICAgfSkKCWl0eG5fYmVnaW4KCWludCBheGZlcgoJaXR4bl9maWVsZCBUeXBlRW51bQoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czo2OAoJLy8geGZlckFzc2V0OiB0aGlzLmFzc2V0SWQudmFsdWUKCWJ5dGUgMHg2MTczNzM2NTc0NDk2NCAvLyAiYXNzZXRJZCIKCWFwcF9nbG9iYWxfZ2V0CglpdHhuX2ZpZWxkIFhmZXJBc3NldAoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czo2OQoJLy8gYXNzZXRBbW91bnQ6IHF1YW50aXR5CglmcmFtZV9kaWcgLTIgLy8gcXVhbnRpdHk6IHVpbnQ2NAoJaXR4bl9maWVsZCBBc3NldEFtb3VudAoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czo3MAoJLy8gYXNzZXRSZWNlaXZlcjogdGhpcy50eG4uc2VuZGVyCgl0eG4gU2VuZGVyCglpdHhuX2ZpZWxkIEFzc2V0UmVjZWl2ZXIKCgkvLyBGZWUgZmllbGQgbm90IHNldCwgZGVmYXVsdGluZyB0byAwCglpbnQgMAoJaXR4bl9maWVsZCBGZWUKCgkvLyBTdWJtaXQgaW5uZXIgdHJhbnNhY3Rpb24KCWl0eG5fc3VibWl0CglyZXRzdWIKCi8vIGRlbGV0ZUFwcGxpY2F0aW9uKCl2b2lkCiphYmlfcm91dGVfZGVsZXRlQXBwbGljYXRpb246CgkvLyBleGVjdXRlIGRlbGV0ZUFwcGxpY2F0aW9uKCl2b2lkCgljYWxsc3ViIGRlbGV0ZUFwcGxpY2F0aW9uCglpbnQgMQoJcmV0dXJuCgovLyBkZWxldGVBcHBsaWNhdGlvbigpOiB2b2lkCi8vCi8vIE1ldGhvZCB0byBkZWxldGUgdGhlIGFwcGxpY2F0aW9uCi8vIFRoaXMgd2lsbCBkZWxldGUgdGhlIGFwcGxpY2F0aW9uIGFuZCB0cmFuc2ZlciBhbGwgYXNzZXRzIHRvIHRoZSBjcmVhdG9yCmRlbGV0ZUFwcGxpY2F0aW9uOgoJcHJvdG8gMCAwCgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjc5CgkvLyBhc3NlcnQodGhpcy50eG4uc2VuZGVyID09PSB0aGlzLmFwcC5jcmVhdG9yKQoJdHhuIFNlbmRlcgoJdHhuYSBBcHBsaWNhdGlvbnMgMAoJYXBwX3BhcmFtc19nZXQgQXBwQ3JlYXRvcgoJcG9wCgk9PQoJYXNzZXJ0CgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjgxCgkvLyBzZW5kQXNzZXRUcmFuc2Zlcih7CgkvLyAgICAgICB4ZmVyQXNzZXQ6IHRoaXMuYXNzZXRJZC52YWx1ZSwKCS8vICAgICAgIGFzc2V0UmVjZWl2ZXI6IHRoaXMuYXBwLmNyZWF0b3IsCgkvLyAgICAgICBhc3NldEFtb3VudDogdGhpcy5hcHAuYWRkcmVzcy5hc3NldEJhbGFuY2UodGhpcy5hc3NldElkLnZhbHVlKSwKCS8vICAgICAgIGFzc2V0Q2xvc2VUbzogdGhpcy5hcHAuY3JlYXRvciwKCS8vICAgICB9KQoJaXR4bl9iZWdpbgoJaW50IGF4ZmVyCglpdHhuX2ZpZWxkIFR5cGVFbnVtCgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjgyCgkvLyB4ZmVyQXNzZXQ6IHRoaXMuYXNzZXRJZC52YWx1ZQoJYnl0ZSAweDYxNzM3MzY1NzQ0OTY0IC8vICJhc3NldElkIgoJYXBwX2dsb2JhbF9nZXQKCWl0eG5fZmllbGQgWGZlckFzc2V0CgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjgzCgkvLyBhc3NldFJlY2VpdmVyOiB0aGlzLmFwcC5jcmVhdG9yCgl0eG5hIEFwcGxpY2F0aW9ucyAwCglhcHBfcGFyYW1zX2dldCBBcHBDcmVhdG9yCglwb3AKCWl0eG5fZmllbGQgQXNzZXRSZWNlaXZlcgoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czo4NAoJLy8gYXNzZXRBbW91bnQ6IHRoaXMuYXBwLmFkZHJlc3MuYXNzZXRCYWxhbmNlKHRoaXMuYXNzZXRJZC52YWx1ZSkKCWdsb2JhbCBDdXJyZW50QXBwbGljYXRpb25BZGRyZXNzCglieXRlIDB4NjE3MzczNjU3NDQ5NjQgLy8gImFzc2V0SWQiCglhcHBfZ2xvYmFsX2dldAoJYXNzZXRfaG9sZGluZ19nZXQgQXNzZXRCYWxhbmNlCglwb3AKCWl0eG5fZmllbGQgQXNzZXRBbW91bnQKCgkvLyBjb250cmFjdHMvRGlnaXRhbE1hcmtldHBsYWNlLmFsZ28udHM6ODUKCS8vIGFzc2V0Q2xvc2VUbzogdGhpcy5hcHAuY3JlYXRvcgoJdHhuYSBBcHBsaWNhdGlvbnMgMAoJYXBwX3BhcmFtc19nZXQgQXBwQ3JlYXRvcgoJcG9wCglpdHhuX2ZpZWxkIEFzc2V0Q2xvc2VUbwoKCS8vIEZlZSBmaWVsZCBub3Qgc2V0LCBkZWZhdWx0aW5nIHRvIDAKCWludCAwCglpdHhuX2ZpZWxkIEZlZQoKCS8vIFN1Ym1pdCBpbm5lciB0cmFuc2FjdGlvbgoJaXR4bl9zdWJtaXQKCgkvLyBjb250cmFjdHMvRGlnaXRhbE1hcmtldHBsYWNlLmFsZ28udHM6ODgKCS8vIHNlbmRQYXltZW50KHsKCS8vICAgICAgIHJlY2VpdmVyOiB0aGlzLmFwcC5jcmVhdG9yLAoJLy8gICAgICAgYW1vdW50OiB0aGlzLmFwcC5hZGRyZXNzLmJhbGFuY2UsCgkvLyAgICAgICBjbG9zZVJlbWFpbmRlclRvOiB0aGlzLmFwcC5jcmVhdG9yLAoJLy8gICAgIH0pCglpdHhuX2JlZ2luCglpbnQgcGF5CglpdHhuX2ZpZWxkIFR5cGVFbnVtCgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjg5CgkvLyByZWNlaXZlcjogdGhpcy5hcHAuY3JlYXRvcgoJdHhuYSBBcHBsaWNhdGlvbnMgMAoJYXBwX3BhcmFtc19nZXQgQXBwQ3JlYXRvcgoJcG9wCglpdHhuX2ZpZWxkIFJlY2VpdmVyCgoJLy8gY29udHJhY3RzL0RpZ2l0YWxNYXJrZXRwbGFjZS5hbGdvLnRzOjkwCgkvLyBhbW91bnQ6IHRoaXMuYXBwLmFkZHJlc3MuYmFsYW5jZQoJZ2xvYmFsIEN1cnJlbnRBcHBsaWNhdGlvbkFkZHJlc3MKCWFjY3RfcGFyYW1zX2dldCBBY2N0QmFsYW5jZQoJcG9wCglpdHhuX2ZpZWxkIEFtb3VudAoKCS8vIGNvbnRyYWN0cy9EaWdpdGFsTWFya2V0cGxhY2UuYWxnby50czo5MQoJLy8gY2xvc2VSZW1haW5kZXJUbzogdGhpcy5hcHAuY3JlYXRvcgoJdHhuYSBBcHBsaWNhdGlvbnMgMAoJYXBwX3BhcmFtc19nZXQgQXBwQ3JlYXRvcgoJcG9wCglpdHhuX2ZpZWxkIENsb3NlUmVtYWluZGVyVG8KCgkvLyBGZWUgZmllbGQgbm90IHNldCwgZGVmYXVsdGluZyB0byAwCglpbnQgMAoJaXR4bl9maWVsZCBGZWUKCgkvLyBTdWJtaXQgaW5uZXIgdHJhbnNhY3Rpb24KCWl0eG5fc3VibWl0CglyZXRzdWIKCipjcmVhdGVfTm9PcDoKCW1ldGhvZCAiY3JlYXRlQXBwbGljYXRpb24odWludDY0LHVpbnQ2NCl2b2lkIgoJdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAoJbWF0Y2ggKmFiaV9yb3V0ZV9jcmVhdGVBcHBsaWNhdGlvbgoKCS8vIHRoaXMgY29udHJhY3QgZG9lcyBub3QgaW1wbGVtZW50IHRoZSBnaXZlbiBBQkkgbWV0aG9kIGZvciBjcmVhdGUgTm9PcAoJZXJyCgoqY2FsbF9Ob09wOgoJbWV0aG9kICJzZXRQcmljZSh1aW50NjQpdm9pZCIKCW1ldGhvZCAib3B0SW5Ub0Fzc2V0KHBheSl2b2lkIgoJbWV0aG9kICJidXlBc3NldChwYXksdWludDY0KXZvaWQiCgl0eG5hIEFwcGxpY2F0aW9uQXJncyAwCgltYXRjaCAqYWJpX3JvdXRlX3NldFByaWNlICphYmlfcm91dGVfb3B0SW5Ub0Fzc2V0ICphYmlfcm91dGVfYnV5QXNzZXQKCgkvLyB0aGlzIGNvbnRyYWN0IGRvZXMgbm90IGltcGxlbWVudCB0aGUgZ2l2ZW4gQUJJIG1ldGhvZCBmb3IgY2FsbCBOb09wCgllcnIKCipjYWxsX0RlbGV0ZUFwcGxpY2F0aW9uOgoJbWV0aG9kICJkZWxldGVBcHBsaWNhdGlvbigpdm9pZCIKCXR4bmEgQXBwbGljYXRpb25BcmdzIDAKCW1hdGNoICphYmlfcm91dGVfZGVsZXRlQXBwbGljYXRpb24KCgkvLyB0aGlzIGNvbnRyYWN0IGRvZXMgbm90IGltcGxlbWVudCB0aGUgZ2l2ZW4gQUJJIG1ldGhvZCBmb3IgY2FsbCBEZWxldGVBcHBsaWNhdGlvbgoJZXJy",
     "clear": "I3ByYWdtYSB2ZXJzaW9uIDEw"
   },
   "contract": {
@@ -81,6 +101,72 @@ export const APP_SPEC: AppSpec = {
     "methods": [
       {
         "name": "createApplication",
+        "desc": "Creating a new application",
+        "args": [
+          {
+            "name": "assetId",
+            "type": "uint64",
+            "desc": "The ID of the asset that we are selling"
+          },
+          {
+            "name": "unitaryPrice",
+            "type": "uint64",
+            "desc": "The cost of buying one unit of the asset"
+          }
+        ],
+        "returns": {
+          "type": "void"
+        }
+      },
+      {
+        "name": "setPrice",
+        "desc": "Setting the new unitary price of the asset",
+        "args": [
+          {
+            "name": "unitaryPrice",
+            "type": "uint64"
+          }
+        ],
+        "returns": {
+          "type": "void"
+        }
+      },
+      {
+        "name": "optInToAsset",
+        "desc": "Opt the contract address into the asset\ni.e this is like importing a token / asset into your wallet",
+        "args": [
+          {
+            "name": "mbrTxn",
+            "type": "pay",
+            "desc": "The payment transaction that pays for the opt-in"
+          }
+        ],
+        "returns": {
+          "type": "void"
+        }
+      },
+      {
+        "name": "buyAsset",
+        "desc": "Buying an asset",
+        "args": [
+          {
+            "name": "buyerTxn",
+            "type": "pay",
+            "desc": "The payment transaction that pays for the asset"
+          },
+          {
+            "name": "quantity",
+            "type": "uint64",
+            "desc": "The quantity of the asset to buy"
+          }
+        ],
+        "returns": {
+          "type": "void"
+        }
+      },
+      {
+        "name": "deleteApplication",
+        "desc": "Method to delete the application\nThis will delete the application and transfer all assets to the creator",
         "args": [],
         "returns": {
           "type": "void"
@@ -153,7 +239,52 @@ export type DigitalMarketplace = {
    * Maps method signatures / names to their argument and return types.
    */
   methods:
-    & Record<'createApplication()void' | 'createApplication', {
+    & Record<'createApplication(uint64,uint64)void' | 'createApplication', {
+      argsObj: {
+        /**
+         * The ID of the asset that we are selling
+         */
+        assetId: bigint | number
+        /**
+         * The cost of buying one unit of the asset
+         */
+        unitaryPrice: bigint | number
+      }
+      argsTuple: [assetId: bigint | number, unitaryPrice: bigint | number]
+      returns: void
+    }>
+    & Record<'setPrice(uint64)void' | 'setPrice', {
+      argsObj: {
+        unitaryPrice: bigint | number
+      }
+      argsTuple: [unitaryPrice: bigint | number]
+      returns: void
+    }>
+    & Record<'optInToAsset(pay)void' | 'optInToAsset', {
+      argsObj: {
+        /**
+         * The payment transaction that pays for the opt-in
+         */
+        mbrTxn: TransactionToSign | Transaction | Promise<SendTransactionResult>
+      }
+      argsTuple: [mbrTxn: TransactionToSign | Transaction | Promise<SendTransactionResult>]
+      returns: void
+    }>
+    & Record<'buyAsset(pay,uint64)void' | 'buyAsset', {
+      argsObj: {
+        /**
+         * The payment transaction that pays for the asset
+         */
+        buyerTxn: TransactionToSign | Transaction | Promise<SendTransactionResult>
+        /**
+         * The quantity of the asset to buy
+         */
+        quantity: bigint | number
+      }
+      argsTuple: [buyerTxn: TransactionToSign | Transaction | Promise<SendTransactionResult>, quantity: bigint | number]
+      returns: void
+    }>
+    & Record<'deleteApplication()void' | 'deleteApplication', {
       argsObj: {
       }
       argsTuple: []
@@ -201,7 +332,16 @@ export type DigitalMarketplaceCreateCalls = (typeof DigitalMarketplaceCallFactor
  * Defines supported create methods for this smart contract
  */
 export type DigitalMarketplaceCreateCallParams =
-  | (TypedCallParams<'createApplication()void'> & (OnCompleteNoOp))
+  | (TypedCallParams<'createApplication(uint64,uint64)void'> & (OnCompleteNoOp))
+/**
+ * A factory for available 'delete' calls
+ */
+export type DigitalMarketplaceDeleteCalls = (typeof DigitalMarketplaceCallFactory)['delete']
+/**
+ * Defines supported delete methods for this smart contract
+ */
+export type DigitalMarketplaceDeleteCallParams =
+  | TypedCallParams<'deleteApplication()void'>
 /**
  * Defines arguments required for the deploy method.
  */
@@ -211,6 +351,10 @@ export type DigitalMarketplaceDeployArgs = {
    * A delegate which takes a create call factory and returns the create call params for this smart contract
    */
   createCall?: (callFactory: DigitalMarketplaceCreateCalls) => DigitalMarketplaceCreateCallParams
+  /**
+   * A delegate which takes a delete call factory and returns the delete call params for this smart contract
+   */
+  deleteCall?: (callFactory: DigitalMarketplaceDeleteCalls) => DigitalMarketplaceDeleteCallParams
 }
 
 
@@ -224,15 +368,37 @@ export abstract class DigitalMarketplaceCallFactory {
   static get create() {
     return {
       /**
-       * Constructs a create call for the DigitalMarketplace smart contract using the createApplication()void ABI method
+       * Constructs a create call for the DigitalMarketplace smart contract using the createApplication(uint64,uint64)void ABI method
        *
        * @param args Any args for the contract call
        * @param params Any additional parameters for the call
        * @returns A TypedCallParams object for the call
        */
-      createApplication(args: MethodArgs<'createApplication()void'>, params: AppClientCallCoreParams & CoreAppCallArgs & AppClientCompilationParams & (OnCompleteNoOp) = {}) {
+      createApplication(args: MethodArgs<'createApplication(uint64,uint64)void'>, params: AppClientCallCoreParams & CoreAppCallArgs & AppClientCompilationParams & (OnCompleteNoOp) = {}) {
         return {
-          method: 'createApplication()void' as const,
+          method: 'createApplication(uint64,uint64)void' as const,
+          methodArgs: Array.isArray(args) ? args : [args.assetId, args.unitaryPrice],
+          ...params,
+        }
+      },
+    }
+  }
+
+  /**
+   * Gets available delete call factories
+   */
+  static get delete() {
+    return {
+      /**
+       * Constructs a delete call for the DigitalMarketplace smart contract using the deleteApplication()void ABI method
+       *
+       * @param args Any args for the contract call
+       * @param params Any additional parameters for the call
+       * @returns A TypedCallParams object for the call
+       */
+      deleteApplication(args: MethodArgs<'deleteApplication()void'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+        return {
+          method: 'deleteApplication()void' as const,
           methodArgs: Array.isArray(args) ? args : [],
           ...params,
         }
@@ -240,6 +406,55 @@ export abstract class DigitalMarketplaceCallFactory {
     }
   }
 
+  /**
+   * Constructs a no op call for the setPrice(uint64)void ABI method
+   *
+   * Setting the new unitary price of the asset
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static setPrice(args: MethodArgs<'setPrice(uint64)void'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'setPrice(uint64)void' as const,
+      methodArgs: Array.isArray(args) ? args : [args.unitaryPrice],
+      ...params,
+    }
+  }
+  /**
+   * Constructs a no op call for the optInToAsset(pay)void ABI method
+   *
+   * Opt the contract address into the asset
+i.e this is like importing a token / asset into your wallet
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static optInToAsset(args: MethodArgs<'optInToAsset(pay)void'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'optInToAsset(pay)void' as const,
+      methodArgs: Array.isArray(args) ? args : [args.mbrTxn],
+      ...params,
+    }
+  }
+  /**
+   * Constructs a no op call for the buyAsset(pay,uint64)void ABI method
+   *
+   * Buying an asset
+   *
+   * @param args Any args for the contract call
+   * @param params Any additional parameters for the call
+   * @returns A TypedCallParams object for the call
+   */
+  static buyAsset(args: MethodArgs<'buyAsset(pay,uint64)void'>, params: AppClientCallCoreParams & CoreAppCallArgs) {
+    return {
+      method: 'buyAsset(pay,uint64)void' as const,
+      methodArgs: Array.isArray(args) ? args : [args.buyerTxn, args.quantity],
+      ...params,
+    }
+  }
 }
 
 /**
@@ -303,8 +518,10 @@ export class DigitalMarketplaceClient {
    */
   public deploy(params: DigitalMarketplaceDeployArgs & AppClientDeployCoreParams = {}): ReturnType<ApplicationClient['deploy']> {
     const createArgs = params.createCall?.(DigitalMarketplaceCallFactory.create)
+    const deleteArgs = params.deleteCall?.(DigitalMarketplaceCallFactory.delete)
     return this.appClient.deploy({
       ...params,
+      deleteArgs,
       createArgs,
       createOnCompleteAction: createArgs?.onCompleteAction,
     })
@@ -317,14 +534,33 @@ export class DigitalMarketplaceClient {
     const $this = this
     return {
       /**
-       * Creates a new instance of the DigitalMarketplace smart contract using the createApplication()void ABI method.
+       * Creates a new instance of the DigitalMarketplace smart contract using the createApplication(uint64,uint64)void ABI method.
        *
        * @param args The arguments for the smart contract call
        * @param params Any additional parameters for the call
        * @returns The create result
        */
-      async createApplication(args: MethodArgs<'createApplication()void'>, params: AppClientCallCoreParams & AppClientCompilationParams & (OnCompleteNoOp) = {}) {
-        return $this.mapReturnValue<MethodReturn<'createApplication()void'>, AppCreateCallTransactionResult>(await $this.appClient.create(DigitalMarketplaceCallFactory.create.createApplication(args, params)))
+      async createApplication(args: MethodArgs<'createApplication(uint64,uint64)void'>, params: AppClientCallCoreParams & AppClientCompilationParams & (OnCompleteNoOp) = {}) {
+        return $this.mapReturnValue<MethodReturn<'createApplication(uint64,uint64)void'>, AppCreateCallTransactionResult>(await $this.appClient.create(DigitalMarketplaceCallFactory.create.createApplication(args, params)))
+      },
+    }
+  }
+
+  /**
+   * Gets available delete methods
+   */
+  public get delete() {
+    const $this = this
+    return {
+      /**
+       * Deletes an existing instance of the DigitalMarketplace smart contract using the deleteApplication()void ABI method.
+       *
+       * @param args The arguments for the smart contract call
+       * @param params Any additional parameters for the call
+       * @returns The delete result
+       */
+      async deleteApplication(args: MethodArgs<'deleteApplication()void'>, params: AppClientCallCoreParams = {}) {
+        return $this.mapReturnValue<MethodReturn<'deleteApplication()void'>>(await $this.appClient.delete(DigitalMarketplaceCallFactory.delete.deleteApplication(args, params)))
       },
     }
   }
@@ -337,6 +573,46 @@ export class DigitalMarketplaceClient {
    */
   public clearState(args: BareCallArgs & AppClientCallCoreParams & CoreAppCallArgs = {}) {
     return this.appClient.clearState(args)
+  }
+
+  /**
+   * Calls the setPrice(uint64)void ABI method.
+   *
+   * Setting the new unitary price of the asset
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call
+   */
+  public setPrice(args: MethodArgs<'setPrice(uint64)void'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(DigitalMarketplaceCallFactory.setPrice(args, params))
+  }
+
+  /**
+   * Calls the optInToAsset(pay)void ABI method.
+   *
+   * Opt the contract address into the asset
+i.e this is like importing a token / asset into your wallet
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call
+   */
+  public optInToAsset(args: MethodArgs<'optInToAsset(pay)void'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(DigitalMarketplaceCallFactory.optInToAsset(args, params))
+  }
+
+  /**
+   * Calls the buyAsset(pay,uint64)void ABI method.
+   *
+   * Buying an asset
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The result of the call
+   */
+  public buyAsset(args: MethodArgs<'buyAsset(pay,uint64)void'>, params: AppClientCallCoreParams & CoreAppCallArgs = {}) {
+    return this.call(DigitalMarketplaceCallFactory.buyAsset(args, params))
   }
 
   /**
@@ -404,6 +680,31 @@ export class DigitalMarketplaceClient {
     let promiseChain:Promise<unknown> = Promise.resolve()
     const resultMappers: Array<undefined | ((x: any) => any)> = []
     return {
+      setPrice(args: MethodArgs<'setPrice(uint64)void'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.setPrice(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
+      },
+      optInToAsset(args: MethodArgs<'optInToAsset(pay)void'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.optInToAsset(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
+      },
+      buyAsset(args: MethodArgs<'buyAsset(pay,uint64)void'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs) {
+        promiseChain = promiseChain.then(() => client.buyAsset(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+        resultMappers.push(undefined)
+        return this
+      },
+      get delete() {
+        const $this = this
+        return {
+          deleteApplication(args: MethodArgs<'deleteApplication()void'>, params?: AppClientComposeCallCoreParams) {
+            promiseChain = promiseChain.then(() => client.delete.deleteApplication(args, {...params, sendParams: {...params?.sendParams, skipSending: true, atc}}))
+            resultMappers.push(undefined)
+            return $this
+          },
+        }
+      },
       clearState(args?: BareCallArgs & AppClientComposeCallCoreParams & CoreAppCallArgs) {
         promiseChain = promiseChain.then(() => client.clearState({...args, sendParams: {...args?.sendParams, skipSending: true, atc}}))
         resultMappers.push(undefined)
@@ -437,6 +738,54 @@ export class DigitalMarketplaceClient {
   }
 }
 export type DigitalMarketplaceComposer<TReturns extends [...any[]] = []> = {
+  /**
+   * Calls the setPrice(uint64)void ABI method.
+   *
+   * Setting the new unitary price of the asset
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  setPrice(args: MethodArgs<'setPrice(uint64)void'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DigitalMarketplaceComposer<[...TReturns, MethodReturn<'setPrice(uint64)void'>]>
+
+  /**
+   * Calls the optInToAsset(pay)void ABI method.
+   *
+   * Opt the contract address into the asset
+i.e this is like importing a token / asset into your wallet
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  optInToAsset(args: MethodArgs<'optInToAsset(pay)void'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DigitalMarketplaceComposer<[...TReturns, MethodReturn<'optInToAsset(pay)void'>]>
+
+  /**
+   * Calls the buyAsset(pay,uint64)void ABI method.
+   *
+   * Buying an asset
+   *
+   * @param args The arguments for the contract call
+   * @param params Any additional parameters for the call
+   * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+   */
+  buyAsset(args: MethodArgs<'buyAsset(pay,uint64)void'>, params?: AppClientComposeCallCoreParams & CoreAppCallArgs): DigitalMarketplaceComposer<[...TReturns, MethodReturn<'buyAsset(pay,uint64)void'>]>
+
+  /**
+   * Gets available delete methods
+   */
+  readonly delete: {
+    /**
+     * Deletes an existing instance of the DigitalMarketplace smart contract using the deleteApplication()void ABI method.
+     *
+     * @param args The arguments for the smart contract call
+     * @param params Any additional parameters for the call
+     * @returns The typed transaction composer so you can fluently chain multiple calls or call execute to execute all queued up transactions
+     */
+    deleteApplication(args: MethodArgs<'deleteApplication()void'>, params?: AppClientComposeCallCoreParams): DigitalMarketplaceComposer<[...TReturns, MethodReturn<'deleteApplication()void'>]>
+  }
+
   /**
    * Makes a clear_state call to an existing instance of the DigitalMarketplace smart contract.
    *

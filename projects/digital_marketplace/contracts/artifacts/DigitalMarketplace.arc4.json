@@ -4,6 +4,72 @@
   "methods": [
     {
       "name": "createApplication",
+      "desc": "Creating a new application",
+      "args": [
+        {
+          "name": "assetId",
+          "type": "uint64",
+          "desc": "The ID of the asset that we are selling"
+        },
+        {
+          "name": "unitaryPrice",
+          "type": "uint64",
+          "desc": "The cost of buying one unit of the asset"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "setPrice",
+      "desc": "Setting the new unitary price of the asset",
+      "args": [
+        {
+          "name": "unitaryPrice",
+          "type": "uint64"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "optInToAsset",
+      "desc": "Opt the contract address into the asset\ni.e this is like importing a token / asset into your wallet",
+      "args": [
+        {
+          "name": "mbrTxn",
+          "type": "pay",
+          "desc": "The payment transaction that pays for the opt-in"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "buyAsset",
+      "desc": "Buying an asset",
+      "args": [
+        {
+          "name": "buyerTxn",
+          "type": "pay",
+          "desc": "The payment transaction that pays for the asset"
+        },
+        {
+          "name": "quantity",
+          "type": "uint64",
+          "desc": "The quantity of the asset to buy"
+        }
+      ],
+      "returns": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "deleteApplication",
+      "desc": "Method to delete the application\nThis will delete the application and transfer all assets to the creator",
       "args": [],
       "returns": {
         "type": "void"
