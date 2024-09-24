@@ -32,7 +32,6 @@ export class DigitalMarketplace extends Contract {
 
   /**
    * Opt the contract address into the asset
-   * i.e this is like importing a token / asset into your wallet
    *
    * @param mbrTxn The payment transaction that pays for the opt-in
    */

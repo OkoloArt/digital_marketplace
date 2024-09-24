@@ -36,7 +36,7 @@
     },
     {
       "name": "optInToAsset",
-      "desc": "Opt the contract address into the asset\ni.e this is like importing a token / asset into your wallet",
+      "desc": "Opt the contract address into the asset",
       "args": [
         {
           "name": "mbrTxn",
